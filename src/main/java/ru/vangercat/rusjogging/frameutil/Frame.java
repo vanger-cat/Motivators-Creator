@@ -26,7 +26,7 @@ public class Frame {
             return this;
         }
 
-        float biggerProportion = widthProportion > heightProportion ? widthProportion : heightProportion;
+        float biggerProportion = Math.max(widthProportion, heightProportion);// ? widthProportion : heightProportion;
         return new Frame(
                 Math.round(frameToResize.getWidth() / biggerProportion),
                 Math.round(frameToResize.getHeight() / biggerProportion));

@@ -28,13 +28,20 @@ public class MotivatorGenerationWindow {
     private MotivatorsFactory motivatorsFactory;
     private File inputFile;
     private File directoryWhereWasLastFileSelected = null;
+    private BufferedImage shownImage;
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("MotivatorGenerationWindow");
-        MotivatorGenerationWindow motivatorGenerationWindow = Guice.createInjector(new ProductionModule()).getInstance(MotivatorGenerationWindow.class);
+        final MotivatorGenerationWindow motivatorGenerationWindow = Guice.createInjector(new ProductionModule()).getInstance(MotivatorGenerationWindow.class);
+
+        JFrame frame = new JFrame("Создание мотиваторов для \"Русских пробежек\"") {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                motivatorGenerationWindow.paintShownImage();
+            }
+        };
         frame.setContentPane(motivatorGenerationWindow.rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
         frame.pack();
         frame.setVisible(true);
         frame.setSize(700, 600);
@@ -111,17 +118,30 @@ public class MotivatorGenerationWindow {
     }
 
     private void showImage(BufferedImage image) {
-        int koef = 4;
+        shownImage = image;
+        paintShownImage();
+    }
 
-        int width = image.getWidth() / koef;
-        int height = image.getHeight() / koef;
+    private void paintShownImage() {
+        cleanImagePlaceHolder();
 
+        if (shownImage == null) {
+            return;
+        }
+
+        float koef = Math.max(
+                shownImage.getWidth() / (float) imagePlaceHolder.getWidth(),
+                shownImage.getHeight() / (float) imagePlaceHolder.getHeight());
+        int width = Math.round(shownImage.getWidth() / koef);
+        int height = Math.round(shownImage.getHeight() / koef);
+        int x = (imagePlaceHolder.getWidth() - width) / 2;
+        int y = (imagePlaceHolder.getHeight() - height) / 2;
+        imagePlaceHolder.getGraphics().drawImage(shownImage, x, y, width, height, null);
+    }
+
+    private void cleanImagePlaceHolder() {
         Graphics graphics = imagePlaceHolder.getGraphics();
         graphics.setColor(imagePlaceHolder.getBackground());
         graphics.fillRect(0, 0, imagePlaceHolder.getWidth(), imagePlaceHolder.getHeight());
-
-        int x = (imagePlaceHolder.getWidth() - width) / 2;
-        int y = (imagePlaceHolder.getHeight() - height) / 2;
-        imagePlaceHolder.getGraphics().drawImage(image, x, y, width, height, null);
     }
 }
