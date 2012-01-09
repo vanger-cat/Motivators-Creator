@@ -17,8 +17,10 @@ public class Motivator {
 
     private static final String STAMP_FILE_NAME = "resources/stamp.png";
     private static final String FONT_FILE_NAME = "resources/Izhitsa.TTF";
-    private static final int FONT_SIZE = 120;
-    private static final Color FONT_COLOR = Color.RED;
+    private static final int FONT_SIZE = 155;
+    private static final Color FONT_COLOR = new Color(210, 30, 40, 255);
+    private static final Color TEXT_OUTLINE_COLOR = Color.white;
+    private static final int TEXT_OUTLINE_WIDTH = 8;
 
     private final BufferedImage motivatingImage;
     private final String motivatorText;
@@ -131,7 +133,6 @@ public class Motivator {
     private void drawMotivatorText(BufferedImage resultingImage) {
         Graphics graphics = resultingImage.getGraphics();
         graphics.setFont(font);
-        graphics.setColor(FONT_COLOR);
 
         FrameInFrame textFrame = rectangleOfFrame.getTextFrame();
         FontMetrics fontMetrics = graphics.getFontMetrics();
@@ -140,7 +141,40 @@ public class Motivator {
         int textWidth = fontMetrics.stringWidth(motivatorText);
 
         int xForCaption = textFrame.getX() + (textFrame.getWidth() - textWidth) / 2;
-        int yForCaption = textFrame.getY() + textHeight;
-        graphics.drawString(motivatorText, xForCaption, yForCaption);
+        int yForCaption = textFrame.getY() + textHeight - 20;
+        drawOutlinedText(graphics, motivatorText, xForCaption, yForCaption);
+//        graphics.drawString(motivatorText, xForCaption, yForCaption);
+    }
+
+    private void drawOutlinedText(Graphics graphics, String text, int x, int y) {
+        graphics.setColor(TEXT_OUTLINE_COLOR);
+        for (int xShift = 0; xShift < TEXT_OUTLINE_WIDTH; xShift++) {
+            for (int yShift = 0; yShift < TEXT_OUTLINE_WIDTH; yShift++) {
+                graphics.drawString(text, ShiftWest(x, xShift), ShiftNorth(y, yShift));
+                graphics.drawString(text, ShiftWest(x, xShift), ShiftSouth(y, yShift));
+                graphics.drawString(text, ShiftEast(x, xShift), ShiftNorth(y, yShift));
+                graphics.drawString(text, ShiftEast(x, xShift), ShiftSouth(y, yShift));
+            }
+        }
+
+
+        graphics.setColor(FONT_COLOR);
+        graphics.drawString(text, x, y);
+    }
+
+    private int ShiftNorth(int p, int distance) {
+        return (p - distance);
+    }
+
+    private int ShiftSouth(int p, int distance) {
+        return (p + distance);
+    }
+
+    private int ShiftEast(int p, int distance) {
+        return (p + distance);
+    }
+
+    private int ShiftWest(int p, int distance) {
+        return (p - distance);
     }
 }
