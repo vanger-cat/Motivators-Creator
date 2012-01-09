@@ -3,6 +3,7 @@ import org.junit.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
 
 import static junit.framework.Assert.assertNotNull;
 
@@ -50,5 +51,10 @@ public class ImageLoaderTest {
             isPreviousLineHasEmptySpace = isCurrentLineHasEmptySpace;
         }
         assertNotNull(image);
+    }
+
+    @Test
+    public void testStringSplit() throws Exception {
+        System.out.println("result = " + Arrays.toString("ASd.dd.png".split("\\.")));
     }
 }

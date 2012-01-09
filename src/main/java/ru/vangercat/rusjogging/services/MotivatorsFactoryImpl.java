@@ -18,8 +18,8 @@ public class MotivatorsFactoryImpl implements MotivatorsFactory {
     }
 
     @Override
-    public Motivator getMotivator(BufferedImage motivationImage) {
-        return new Motivator(motivationImage);
+    public Motivator getMotivator(BufferedImage motivationImage, String motivatorText) {
+        return new Motivator(motivationImage, motivatorText);
     }
 
 }

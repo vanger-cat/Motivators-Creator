@@ -14,5 +14,5 @@ import java.awt.image.BufferedImage;
 public
 @ImplementedBy(MotivatorsFactoryImpl.class)
 interface MotivatorsFactory {
-    Motivator getMotivator(BufferedImage motivationImage);
+    Motivator getMotivator(BufferedImage motivationImage, String motivatorText);
 }

@@ -11,8 +11,9 @@ import java.awt.image.BufferedImage;
  * Time: 2:57
  */
 public class FrameForMotivator extends Frame {
-    private final FrameInFrame contentFrame;
     private static final int EMPTY_SPACE_RGB_VALUE = 16777215;
+    private final FrameInFrame contentFrame;
+    private final FrameInFrame textFrame;
     private final BufferedImage image;
 
     public FrameForMotivator(BufferedImage image) {
@@ -20,6 +21,15 @@ public class FrameForMotivator extends Frame {
         this.image = image;
 
         contentFrame = calculateFrameForContent();
+        textFrame = calculateTextFrame();
+    }
+
+    public FrameInFrame getContentFrame() {
+        return contentFrame;
+    }
+
+    public FrameInFrame getTextFrame() {
+        return textFrame;
     }
 
     private FrameInFrame calculateFrameForContent() {
@@ -29,6 +39,11 @@ public class FrameForMotivator extends Frame {
         int heightOfContent = findHeightOfContent(upperLeftCornerOfContent);
 
         return new FrameInFrame(upperLeftCornerOfContent.x, upperLeftCornerOfContent.y, widthOfContent, heightOfContent);
+    }
+
+    private FrameInFrame calculateTextFrame() {
+        int y = contentFrame.getY() + contentFrame.getHeight();
+        return new FrameInFrame(0, y, image.getWidth(), image.getHeight() - y);
     }
 
     private int findWidthOfContent(Point upperLeftCornerOfContent) {
@@ -66,10 +81,6 @@ public class FrameForMotivator extends Frame {
         }
 
         return point;
-    }
-
-    public FrameInFrame getContentFrame() {
-        return contentFrame;
     }
 
     private class Point {
