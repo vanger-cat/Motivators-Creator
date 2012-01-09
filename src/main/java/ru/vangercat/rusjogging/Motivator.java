@@ -5,7 +5,6 @@ import ru.vangercat.rusjogging.frameutil.Frame;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -16,8 +15,8 @@ import java.io.IOException;
  */
 public class Motivator {
 
-    private static final String STAMP_FILE_NAME = "stamp.png";
-    private static final String FONT_FILE_NAME = "Izhitsa.TTF";
+    private static final String STAMP_FILE_NAME = "resources/stamp.png";
+    private static final String FONT_FILE_NAME = "resources/Izhitsa.TTF";
     private static final int FONT_SIZE = 120;
     private static final Color FONT_COLOR = Color.RED;
 
@@ -43,21 +42,21 @@ public class Motivator {
         String motivatorFrameFileName;
         switch (motivatingImageRectangle.getOrientation()) {
             case HORIZONTAL: {
-                motivatorFrameFileName = "frame_horizontal.png";
+                motivatorFrameFileName = "resources/frame_horizontal.png";
                 break;
             }
             case VERTICAL: {
-                motivatorFrameFileName = "frame_vertical.png";
+                motivatorFrameFileName = "resources/frame_vertical.png";
                 break;
             }
             default: {
-                motivatorFrameFileName = "frame_vertical.png";
+                motivatorFrameFileName = "resources/frame_vertical.png";
                 break;
             }
         }
 
         try {
-            motivatorFrameImage = ImageIO.read(new File(motivatorFrameFileName));
+            motivatorFrameImage = ImageIO.read(ClassLoader.getSystemResourceAsStream(motivatorFrameFileName));
             rectangleOfFrame = new FrameForMotivator(motivatorFrameImage);
         } catch (IOException e) {
             throw new MotivatorImageException("Не удаётся загрузить рамку для мотиватора", e);
@@ -66,7 +65,7 @@ public class Motivator {
 
     private void initStampForMotivator() {
         try {
-            motivatorStampImage = ImageIO.read(new File(STAMP_FILE_NAME));
+            motivatorStampImage = ImageIO.read(ClassLoader.getSystemResourceAsStream(STAMP_FILE_NAME));
         } catch (IOException e) {
             throw new MotivatorImageException("Не удаётся загрузить печать для для мотиватора из файла " + STAMP_FILE_NAME, e);
         }
@@ -74,7 +73,7 @@ public class Motivator {
 
     private void initFontForMotivatorText() {
         try {
-            Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(FONT_FILE_NAME));
+            Font newFont = Font.createFont(Font.TRUETYPE_FONT, ClassLoader.getSystemResourceAsStream(FONT_FILE_NAME));
             font = newFont.deriveFont(Font.PLAIN, FONT_SIZE);
         } catch (Exception e) {
             throw new MotivatorImageException("Не удаётся загрузить шрифт из файла " + FONT_FILE_NAME, e);
