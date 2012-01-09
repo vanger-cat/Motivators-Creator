@@ -10,37 +10,37 @@ import static ru.vangercat.rusjogging.frameutil.FrameOrientation.*;
  */
 public class Frame {
 
-    private final long width;
-    private final long height;
+    private final int width;
+    private final int height;
 
-    public Frame(long width, long height) {
+    public Frame(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
     public Frame getFrameSizedToFit(Frame frameToResize) {
-        double widthProportion = getProportionBetween(frameToResize.getWidth(), this.getWidth());
-        double heightProportion = getProportionBetween(frameToResize.getHeight(), this.getHeight());
+        float widthProportion = getProportionBetween(frameToResize.getWidth(), this.getWidth());
+        float heightProportion = getProportionBetween(frameToResize.getHeight(), this.getHeight());
 
         if (widthProportion == heightProportion) {
             return this;
         }
 
-        double biggerProportion = widthProportion > heightProportion ? widthProportion : heightProportion;
+        float biggerProportion = widthProportion > heightProportion ? widthProportion : heightProportion;
         return new Frame(
                 Math.round(frameToResize.getWidth() / biggerProportion),
                 Math.round(frameToResize.getHeight() / biggerProportion));
     }
 
-    private static double getProportionBetween(long parameter1, long parameter2) {
-        return parameter1 / (double) parameter2;
+    private static float getProportionBetween(long parameter1, long parameter2) {
+        return parameter1 / (float) parameter2;
     }
 
-    public long getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public long getHeight() {
+    public int getHeight() {
         return height;
     }
 
@@ -55,8 +55,8 @@ public class Frame {
 
     @Override
     public int hashCode() {
-        int result = (int) (width ^ (width >>> 32));
-        result = 31 * result + (int) (height ^ (height >>> 32));
+        int result = width;
+        result = 31 * result + height;
         return result;
     }
 

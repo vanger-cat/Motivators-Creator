@@ -1,5 +1,9 @@
 package ru.vangercat.rusjogging;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import ru.vangercat.rusjogging.services.MotivatorsFactory;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,31 +23,22 @@ public class MotivatorGenerationWindow {
     private JPanel imagePlaceHolder;
     private JPanel rootPanel;
 
-    private BufferedImage frameForMotivator;
+    private MotivatorsFactory motivatorsFactory;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MotivatorGenerationWindow");
-        MotivatorGenerationWindow motivatorGenerationWindow = new MotivatorGenerationWindow();
+        MotivatorGenerationWindow motivatorGenerationWindow = Guice.createInjector(new ProductionModule()).getInstance(MotivatorGenerationWindow.class);
         frame.setContentPane(motivatorGenerationWindow.rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.pack();
-        frame.setSize(500, 300);
+        frame.setSize(1280, 780);
         frame.setVisible(true);
-
-        motivatorGenerationWindow.init();
     }
 
-    private void init() {
-        try {
-            loadFrameForMotivators();
-        } catch (MotivatorImageException e) {
-            processException(e);
-        }
-    }
-
-    public MotivatorGenerationWindow() {
-
+    @Inject
+    public MotivatorGenerationWindow(MotivatorsFactory motivatorsFactory) {
+        this.motivatorsFactory = motivatorsFactory;
         loadImageButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 selectAndLoadImage();
@@ -56,21 +51,12 @@ public class MotivatorGenerationWindow {
         JOptionPane.showMessageDialog(this.rootPanel, e.getMessage());
     }
 
-    private void loadFrameForMotivators() {
-        try {
-            frameForMotivator = ImageIO.read(new File("frame_vertical.png"));
-            imagePlaceHolder.getGraphics().drawImage(frameForMotivator, 0, 0, imagePlaceHolder.getWidth(), imagePlaceHolder.getHeight(), null);
-        } catch (IOException e) {
-            throw new MotivatorImageException("Не удаётся загрузить рамку для мотиваторов.", e);
-        }
-    }
-
     private void selectAndLoadImage() {
         JFileChooser fileChooser = createFileChooserDialog();
         int selectingResult = fileChooser.showOpenDialog(imagePlaceHolder);
 
         if (selectingResult == JFileChooser.APPROVE_OPTION) {
-            showImageFromFile(fileChooser.getSelectedFile());
+            showMotivatorWithImageFromFile(fileChooser.getSelectedFile());
         }
     }
 
@@ -80,20 +66,22 @@ public class MotivatorGenerationWindow {
         return fileChooser;
     }
 
-    private void showImageFromFile(File imageFile) {
+    private void showMotivatorWithImageFromFile(File imageFile) {
         try {
-            tryToShowImageFromFile(imageFile);
+            tryToLoadImageFromFileAndMakeMotivator(imageFile);
         } catch (IOException e) {
             processException(new MotivatorImageException("Не удаётся загрузить изобржание.", e));
         }
     }
 
-    private void tryToShowImageFromFile(File imageFile) throws IOException {
+    private void tryToLoadImageFromFileAndMakeMotivator(File imageFile) throws IOException {
         BufferedImage image = ImageIO.read(imageFile);
-        showImage(image);
+        Motivator motivator = motivatorsFactory.getMotivator(image);
+        showImage(motivator.getResultingImage());
     }
 
     private void showImage(BufferedImage image) {
-        imagePlaceHolder.getGraphics().drawImage(image, 10, 10, imagePlaceHolder.getWidth() - 20, imagePlaceHolder.getHeight() - 60, null);
+        int koef = 4;
+        imagePlaceHolder.getGraphics().drawImage(image, 0, 0, image.getWidth() / koef, image.getHeight() / koef, null);
     }
 }
