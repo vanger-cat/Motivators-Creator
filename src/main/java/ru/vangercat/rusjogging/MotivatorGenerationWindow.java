@@ -33,7 +33,7 @@ public class MotivatorGenerationWindow {
     public static void main(String[] args) {
         final MotivatorGenerationWindow motivatorGenerationWindow = Guice.createInjector(new ProductionModule()).getInstance(MotivatorGenerationWindow.class);
 
-        JFrame frame = new JFrame("Создание мотиваторов для \"Русских пробежек\"") {
+        JFrame frame = new JFrame("Русские пробежки - мотиваторы") {
             @Override
             public void paint(Graphics g) {
                 super.paint(g);
