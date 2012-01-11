@@ -20,7 +20,7 @@ public class Motivator {
     private static final int FONT_SIZE = 155;
     private static final Color FONT_COLOR = new Color(210, 30, 40, 255);
     private static final Color TEXT_OUTLINE_COLOR = Color.white;
-    private static final int TEXT_OUTLINE_WIDTH = 8;
+    private static final int TEXT_OUTLINE_WIDTH = 6;
 
     private BufferedImage motivatingImage;
     private final String motivatorText;
@@ -98,9 +98,6 @@ public class Motivator {
     }
 
     private void drawMotivatorFrame(BufferedImage resultingImage) {
-//        motivatorFrameImage = rectangleOfFrame.getFrameWithContentFrameSizedFor(motivatingImageRectangle);
-//        rectangleOfFrame = new FrameForMotivator(motivatorFrameImage);
-
         resultingImage.getGraphics().drawImage(motivatorFrameImage, 0, 0, rectangleOfFrame.getWidth(), rectangleOfFrame.getHeight(), null);
     }
 
@@ -139,16 +136,25 @@ public class Motivator {
 
     private void drawMotivatorText(BufferedImage resultingImage) {
         Graphics graphics = resultingImage.getGraphics();
-        graphics.setFont(font);
 
         FrameInFrame textFrame = rectangleOfFrame.getTextFrame();
+        graphics.setFont(font);
         FontMetrics fontMetrics = graphics.getFontMetrics();
-
         int textHeight = fontMetrics.getHeight();
         int textWidth = fontMetrics.stringWidth(motivatorText);
 
+        float downShif = 0;
+        while ((textFrame.getHeight() - 2 * TEXT_OUTLINE_WIDTH - 32 <= textHeight) || (textFrame.getWidth() - 2 * TEXT_OUTLINE_WIDTH <= textWidth)) {
+            Font currentFont = graphics.getFont();
+            graphics.setFont(currentFont.deriveFont(currentFont.getSize() - 1f));
+            downShif += 0.5f;
+            fontMetrics = graphics.getFontMetrics();
+            textHeight = fontMetrics.getHeight();
+            textWidth = fontMetrics.stringWidth(motivatorText);
+        }
+
         int xForCaption = textFrame.getX() + (textFrame.getWidth() - textWidth) / 2;
-        int yForCaption = textFrame.getY() + textHeight - 20;
+        int yForCaption = textFrame.getY() + textHeight - 20 + Math.round(downShif);
         drawOutlinedText(graphics, motivatorText, xForCaption, yForCaption);
     }
 
