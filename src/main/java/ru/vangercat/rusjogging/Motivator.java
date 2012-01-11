@@ -22,7 +22,7 @@ public class Motivator {
     private static final Color TEXT_OUTLINE_COLOR = Color.white;
     private static final int TEXT_OUTLINE_WIDTH = 8;
 
-    private final BufferedImage motivatingImage;
+    private BufferedImage motivatingImage;
     private final String motivatorText;
     private FrameForMotivator rectangleOfFrame;
     private Frame motivatingImageRectangle;
@@ -83,7 +83,11 @@ public class Motivator {
     }
 
     public BufferedImage getResultingImage() {
+        motivatorFrameImage = rectangleOfFrame.getFrameWithContentFrameSizedFor(motivatingImageRectangle);
+        rectangleOfFrame = new FrameForMotivator(motivatorFrameImage);
+
         BufferedImage resultingImage = new BufferedImage(rectangleOfFrame.getWidth(), rectangleOfFrame.getHeight(), motivatorFrameImage.getType());
+
         drawMotivatorFrame(resultingImage);
         drawMotivatorContent(resultingImage);
         drawMotivatorStamp(resultingImage);
@@ -94,22 +98,25 @@ public class Motivator {
     }
 
     private void drawMotivatorFrame(BufferedImage resultingImage) {
-        resultingImage.getGraphics().drawImage(motivatorFrameImage, 0, 0, null);
+//        motivatorFrameImage = rectangleOfFrame.getFrameWithContentFrameSizedFor(motivatingImageRectangle);
+//        rectangleOfFrame = new FrameForMotivator(motivatorFrameImage);
+
+        resultingImage.getGraphics().drawImage(motivatorFrameImage, 0, 0, rectangleOfFrame.getWidth(), rectangleOfFrame.getHeight(), null);
     }
 
     private void drawMotivatorContent(BufferedImage resultingImage) {
         FrameInFrame contentFrame = rectangleOfFrame.getContentFrame();
         Frame frameSizedToFit = contentFrame.getFrameSizedToFit(motivatingImageRectangle);
         int xForMotivatigImage;
-        int xOffset = (contentFrame.getWidth() - frameSizedToFit.getWidth()) / 2;
+        int xOffset = (contentFrame.getWidth() - frameSizedToFit.getWidth()) / 2 - 1;
         xForMotivatigImage = xOffset + contentFrame.getX();
 
         int yForMotivatigImage;
-        int yOffset = (contentFrame.getHeight() - frameSizedToFit.getHeight()) / 2;
+        int yOffset = (contentFrame.getHeight() - frameSizedToFit.getHeight()) / 2 - 1;
         yForMotivatigImage = yOffset + contentFrame.getY();
 
-        int width = frameSizedToFit.getWidth();
-        int height = frameSizedToFit.getHeight();
+        int width = frameSizedToFit.getWidth() + 1;
+        int height = frameSizedToFit.getHeight() + 1;
 
         resultingImage.getGraphics().drawImage(
                 motivatingImage,
@@ -143,7 +150,6 @@ public class Motivator {
         int xForCaption = textFrame.getX() + (textFrame.getWidth() - textWidth) / 2;
         int yForCaption = textFrame.getY() + textHeight - 20;
         drawOutlinedText(graphics, motivatorText, xForCaption, yForCaption);
-//        graphics.drawString(motivatorText, xForCaption, yForCaption);
     }
 
     private void drawOutlinedText(Graphics graphics, String text, int x, int y) {

@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
  * Time: 2:57
  */
 public class FrameForMotivator extends Frame {
-    private static final int EMPTY_SPACE_RGB_VALUE = 16777215;
+    private static final int EMPTY_SPACE_RGB_VALUE = 0;
     private final FrameInFrame contentFrame;
     private final FrameInFrame textFrame;
     private final BufferedImage image;
@@ -21,6 +21,11 @@ public class FrameForMotivator extends Frame {
         this.image = image;
 
         contentFrame = calculateFrameForContent();
+        for (int x = contentFrame.getX(); x < contentFrame.getX() + contentFrame.getWidth(); x++) {
+            for (int y = contentFrame.getY(); y < contentFrame.getY() + contentFrame.getHeight(); y++) {
+                image.setRGB(x, y, 0);
+            }
+        }
         textFrame = calculateTextFrame();
     }
 
@@ -50,7 +55,7 @@ public class FrameForMotivator extends Frame {
         boolean isInEmptySpace = true;
         int x = upperLeftCornerOfContent.x;
         while (isInEmptySpace && x < image.getWidth()) {
-            isInEmptySpace = image.getRGB(x, upperLeftCornerOfContent.y) == EMPTY_SPACE_RGB_VALUE;
+            isInEmptySpace = isEmptyRGB(image.getRGB(x, upperLeftCornerOfContent.y));
             x++;
         }
 
@@ -61,7 +66,7 @@ public class FrameForMotivator extends Frame {
         boolean isInEmptySpace = true;
         int y = upperLeftCornerOfContent.y;
         while (isInEmptySpace && y < image.getHeight()) {
-            isInEmptySpace = image.getRGB(upperLeftCornerOfContent.x, y) == EMPTY_SPACE_RGB_VALUE;
+            isInEmptySpace = isEmptyRGB(image.getRGB(upperLeftCornerOfContent.x, y));
             y++;
         }
 
@@ -74,13 +79,30 @@ public class FrameForMotivator extends Frame {
         while (!isInEmptySpace && point.y < image.getHeight()) {
             point.x = 0;
             while (!isInEmptySpace && point.x < image.getWidth()) {
-                isInEmptySpace = image.getRGB(point.x, point.y) == EMPTY_SPACE_RGB_VALUE;
+                isInEmptySpace = isEmptyRGB(image.getRGB(point.x, point.y));
                 point.x++;
             }
             point.y++;
         }
 
         return point;
+    }
+
+    private boolean isEmptyRGB(int rgb) {
+        return rgb == EMPTY_SPACE_RGB_VALUE || rgb == 16777215;
+    }
+
+    public BufferedImage getFrameWithContentFrameSizedFor(Frame motivatingImageRectangle) {
+        Frame frameSizedToFit = this.getContentFrame().getFrameSizedToFit(motivatingImageRectangle);
+        float widthProportion = calculateProportionBetween(this.getContentFrame().getWidth(), frameSizedToFit.getWidth());
+        float heightProportion = calculateProportionBetween(this.getContentFrame().getHeight(), frameSizedToFit.getHeight());
+
+        int newWidth = Math.round(this.getWidth() / widthProportion);
+        int newHeight = Math.round(this.getHeight() / heightProportion);
+        BufferedImage imageForNewFrame = new BufferedImage(newWidth, newHeight, image.getType());
+        imageForNewFrame.getGraphics().drawImage(image, 0, 0, newWidth, newHeight, null);
+
+        return imageForNewFrame;
     }
 
     private class Point {

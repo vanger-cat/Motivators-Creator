@@ -19,8 +19,8 @@ public class Frame {
     }
 
     public Frame getFrameSizedToFit(Frame frameToResize) {
-        float widthProportion = getProportionBetween(frameToResize.getWidth(), this.getWidth());
-        float heightProportion = getProportionBetween(frameToResize.getHeight(), this.getHeight());
+        float widthProportion = calculateProportionBetween(frameToResize.getWidth(), this.getWidth());
+        float heightProportion = calculateProportionBetween(frameToResize.getHeight(), this.getHeight());
 
         if (widthProportion == heightProportion) {
             return this;
@@ -32,7 +32,7 @@ public class Frame {
                 Math.round(frameToResize.getHeight() / biggerProportion));
     }
 
-    private static float getProportionBetween(long parameter1, long parameter2) {
+    protected static float calculateProportionBetween(long parameter1, long parameter2) {
         return parameter1 / (float) parameter2;
     }
 

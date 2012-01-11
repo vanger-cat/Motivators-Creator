@@ -86,6 +86,7 @@ public class MotivatorGenerationWindow {
     }
 
     private void showMotivatorWithImageFromFile(File imageFile) {
+        shownImage = null;
         BufferedImage motivator = null;
         try {
             motivator = tryToLoadImageFromFileAndMakeMotivator(imageFile);
